@@ -25,3 +25,9 @@ jobs:
     - name: Run time logger script
       run: |
         python main.py  # Replace with your actual script filename
+
+    - name: Upload log file
+      uses: actions/upload-artifact@v3
+      with:
+        name: time-logs
+        path: status.log
