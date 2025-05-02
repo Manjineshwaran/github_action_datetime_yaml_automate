@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'  # Uses the latest Python 3 version
+        python-version: '3.12'  # Uses the latest Python 3 version
         
     - name: Install dependencies
       run: |
@@ -24,4 +24,4 @@ jobs:
         
     - name: Run time logger script
       run: |
-        python your_script_name.py  # Replace with your actual script filename
+        python main.py  # Replace with your actual script filename
