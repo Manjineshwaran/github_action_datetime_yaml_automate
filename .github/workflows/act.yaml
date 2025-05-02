@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'  # Uses the latest Python 3 version
+        python-version: '3.12'  # Specific Python version
         
     - name: Install dependencies
       run: |
@@ -24,10 +24,10 @@ jobs:
         
     - name: Run time logger script
       run: |
-        python main.py  # Replace with your actual script filename
-
+        python main.py
+        
     - name: Upload log file
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to v4
       with:
         name: time-logs
         path: status.log
