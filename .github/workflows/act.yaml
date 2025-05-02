@@ -1,30 +1,95 @@
-name: Run Time Logger
+name: Automated Log Manager
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Runs every 2 minutes
-  workflow_dispatch:        # Allows manual triggering
+    - cron: '*/2 * * * *'  # Every 2 minutes
+  workflow_dispatch:
 
 jobs:
-  log-time:
+  manage-logs:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write  # Essential for pushing changes
+
     steps:
-    - name: Checkout repository
+    - name: Checkout with full history
       uses: actions/checkout@v4
-      
-    - name: Set up Python
+      with:
+        fetch-depth: 0  # Crucial for proper git operations
+
+    - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'  # Specific Python version
-        
-    - name: Install dependencies
+        python-version: '3.11'  # Pinned version for stability
+
+    - name: Generate logs
       run: |
-        python -m pip install --upgrade pip
-        
-    - name: Run time logger script
-      run: |
+        # Create logs directory if it doesn't exist
+        mkdir -p logs
+        # Run your script (modify as needed)
         python main.py
+
+    - name: Smart Commit & Push
+      run: |
+        # Configure git identity
+        git config --global user.email "manjineshwaran@gmail.com"
+        git config --global user.name "Manjineshwaran"
+
+        # Add only log files
+        git add logs/*.log
+
+        # Check for changes without using diff-index
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit"
+        else
+          # Create commit with dynamic message
+          git commit -m "📝 Automated log update $(date +'%Y-%m-%d %H:%M:%S') [skip ci]"
+          
+          # Push changes safely
+          git pull --rebase  # Prevent merge conflicts
+          git push
+          echo "Changes pushed successfully"
+        fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Run Time Logger
+
+# on:
+#   schedule:
+#     - cron: '*/2 * * * *'  # Runs every 2 minutes
+#   workflow_dispatch:        # Allows manual triggering
+
+# jobs:
+#   log-time:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v4
+      
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.12'  # Specific Python version
+        
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+        
+#     - name: Run time logger script
+#       run: |
+#         python main.py
         
     - name: Upload log file
       uses: actions/upload-artifact@v4  # Updated to v4
