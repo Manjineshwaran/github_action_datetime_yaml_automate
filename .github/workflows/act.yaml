@@ -1,9 +1,9 @@
+## automatic
 name: Automated Log Manager
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Every 2 minutes
-  workflow_dispatch:
+    - cron: '*/2 * * * *'  # Every 2 minutes (no manual trigger)
 
 jobs:
   manage-logs:
@@ -26,7 +26,7 @@ jobs:
       run: |
         # Create logs directory if it doesn't exist
         mkdir -p logs
-        # Run your script (modify as needed)
+        # Run your script
         python main.py
 
     - name: Smart Commit & Push
@@ -38,7 +38,7 @@ jobs:
         # Add only log files
         git add logs/*.log
 
-        # Check for changes without using diff-index
+        # Check for changes
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes to commit"
         else
@@ -63,6 +63,73 @@ jobs:
 
 
 
+
+## manual
+# name: Automated Log Manager
+
+# on:
+#   schedule:
+#     - cron: '*/2 * * * *'  # Every 2 minutes
+#   workflow_dispatch:
+
+# jobs:
+#   manage-logs:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write  # Essential for pushing changes
+
+#     steps:
+#     - name: Checkout with full history
+#       uses: actions/checkout@v4
+#       with:
+#         fetch-depth: 0  # Crucial for proper git operations
+
+#     - name: Setup Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.11'  # Pinned version for stability
+
+#     - name: Generate logs
+#       run: |
+#         # Create logs directory if it doesn't exist
+#         mkdir -p logs
+#         # Run your script (modify as needed)
+#         python main.py
+
+#     - name: Smart Commit & Push
+#       run: |
+#         # Configure git identity
+#         git config --global user.email "manjineshwaran@gmail.com"
+#         git config --global user.name "Manjineshwaran"
+
+#         # Add only log files
+#         git add logs/*.log
+
+#         # Check for changes without using diff-index
+#         if [ -z "$(git status --porcelain)" ]; then
+#           echo "No changes to commit"
+#         else
+#           # Create commit with dynamic message
+#           git commit -m "📝 Automated log update $(date +'%Y-%m-%d %H:%M:%S') [skip ci]"
+          
+#           # Push changes safely
+#           git pull --rebase  # Prevent merge conflicts
+#           git push
+#           echo "Changes pushed successfully"
+#         fi
+
+
+
+
+
+
+
+
+
+
+
+
+## without logs and manual
 # name: Run Time Logger
 
 # on:
